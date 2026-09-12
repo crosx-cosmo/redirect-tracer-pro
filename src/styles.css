@@ -211,6 +211,8 @@
   html {
     scroll-behavior: smooth;
     color-scheme: light;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
   }
 
   html.dark {
@@ -225,10 +227,25 @@
     letter-spacing: -0.011em;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+    overscroll-behavior-y: none;
+    min-height: 100svh;
+    padding-bottom: env(safe-area-inset-bottom);
     transition:
       background-color 0.35s var(--ease-premium),
       color 0.35s var(--ease-premium);
   }
+
+  /* Comfortable touch targets on coarse pointers (phones, installed app) */
+  @media (pointer: coarse) {
+    button,
+    a[role="button"],
+    [role="switch"],
+    summary {
+      min-height: 36px;
+    }
+  }
+
 
   h1,
   h2,
