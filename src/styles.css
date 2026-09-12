@@ -238,9 +238,8 @@
 
   /* Comfortable touch targets on coarse pointers (phones, installed app) */
   @media (pointer: coarse) {
-    button,
+    button:not([role="switch"]),
     a[role="button"],
-    [role="switch"],
     summary {
       min-height: 36px;
     }
