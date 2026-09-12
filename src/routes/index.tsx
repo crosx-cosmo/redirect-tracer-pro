@@ -10,7 +10,9 @@ import { ExportBar } from "@/components/analyzer/ExportBar";
 import { ReportView } from "@/components/analyzer/ReportView";
 import { EmptyState, ErrorState, LoadingState } from "@/components/analyzer/States";
 import { UrlInputPanel } from "@/components/analyzer/UrlInputPanel";
+import { InstallAppButton } from "@/components/InstallAppButton";
 import { ThemeToggle } from "@/components/ThemeToggle";
+
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { analysisKey, type ShareIdMap } from "@/lib/analysis-store";
@@ -51,8 +53,9 @@ function AnalyzerPage() {
 
   return (
     <div className="bg-hero min-h-screen">
-      <header className="sticky top-0 z-30 border-b border-hairline bg-background/70 backdrop-blur-xl">
+      <header className="app-safe-top sticky top-0 z-30 border-b border-hairline bg-background/70 backdrop-blur-xl">
         <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-3 sm:gap-4 sm:px-6">
+
           <a href="/" aria-label="CROSX home" className="flex shrink-0 items-center">
             <img
               src={CROSX_LOGO_URL}
@@ -84,7 +87,9 @@ function AnalyzerPage() {
               </TooltipTrigger>
               <TooltipContent>Requests are performed server-side, never in the browser</TooltipContent>
             </Tooltip>
+            <InstallAppButton />
             <ThemeToggle />
+
           </div>
         </div>
       </header>
