@@ -5,6 +5,7 @@ import { ArrowLeft, FileSearch } from "lucide-react";
 import { CROSX_LOGO_URL } from "@/lib/brand";
 import { ReportView } from "@/components/analyzer/ReportView";
 import { ErrorState, LoadingState } from "@/components/analyzer/States";
+import { InstallAppButton } from "@/components/InstallAppButton";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { loadSharedAnalysis } from "@/lib/analysis-store";
 
@@ -37,8 +38,9 @@ function SharedReportPage() {
 
   return (
     <div className="bg-hero min-h-screen">
-      <header className="sticky top-0 z-30 border-b border-hairline bg-background/70 backdrop-blur-xl">
+      <header className="app-safe-top sticky top-0 z-30 border-b border-hairline bg-background/70 backdrop-blur-xl">
         <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-3 sm:gap-4 sm:px-6">
+
           <Link to="/" aria-label="CROSX home" className="flex shrink-0 items-center">
             <img
               src={CROSX_LOGO_URL}
@@ -57,7 +59,11 @@ function SharedReportPage() {
               Saved redirect chain, headers and tracking diffs
             </p>
           </div>
-          <ThemeToggle />
+          <div className="flex shrink-0 items-center gap-2">
+            <InstallAppButton />
+            <ThemeToggle />
+          </div>
+
         </div>
       </header>
 
