@@ -486,3 +486,14 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* Safe-area helpers for the installed (standalone) app: notches, Android status
+   and gesture bars. No-ops in a normal browser tab. */
+@utility app-safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+@utility app-safe-x {
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
+}
