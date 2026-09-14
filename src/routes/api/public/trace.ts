@@ -57,9 +57,33 @@ async function run(urls: string[]): Promise<RedirectAnalysis[]> {
   return out;
 }
 
+const USAGE = {
+  endpoint: "/api/public/trace",
+  methods: ["GET", "POST"],
+  get: "/api/public/trace?url=https://example.com (repeat ?url= or comma-separate for batches)",
+  post: { url: "https://example.com" },
+  batch: { urls: ["https://example.com", "https://bit.ly/x"] },
+  limits: {
+    maxUrlsPerRequest: MAX_URLS,
+    requestsPerMinute: RATE_LIMIT,
+    maxHops: 20,
+    perHopTimeoutSeconds: 15,
+    overallTimeoutSeconds: 55,
+  },
+  mechanisms: [
+    "http-redirect",
+    "meta-refresh",
+    "javascript-redirect",
+    "browser-navigation",
+    "blocked",
+    "final-response",
+  ],
+  docs: "/api-docs",
+};
+
 async function handle(request: Request, urls: string[]) {
   if (!urls.length) {
-    return json({ error: "Provide a 'url' (or 'urls' array) to trace." }, 400);
+    return json({ error: "Provide a 'url' (or 'urls' array) to trace.", usage: USAGE }, 400);
   }
   if (urls.length > MAX_URLS) {
     return json({ error: `A maximum of ${MAX_URLS} URLs per request is allowed.` }, 400);
