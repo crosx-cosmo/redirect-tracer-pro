@@ -73,16 +73,19 @@ const RESPONSE_SAMPLE = `{
       "startUrl": "https://bit.ly/example",
       "finalUrl": "https://example.com/offer?utm_source=partner",
       "finalDestinationConfirmed": true,
-      "totalHops": 3,
-      "totalTimeMs": 812,
       "hops": [
         {
+          "index": 0,
           "url": "https://bit.ly/example",
-          "mechanism": "http",
           "status": 301,
-          "destination": "https://tracker.example/click?id=9",
-          "timeMs": 210,
-          "headers": { "location": "https://tracker.example/click?id=9" }
+          "redirectType": "Permanent Redirect",
+          "mechanism": "http-redirect",
+          "mechanismLabel": "HTTP Redirect",
+          "responseTimeMs": 210,
+          "nextUrl": "https://tracker.example/click?id=9",
+          "headers": { "location": "https://tracker.example/click?id=9" },
+          "params": { "id": "9" },
+          "blockedReason": null
         }
       ],
       "issues": [],
@@ -235,9 +238,9 @@ function ApiDocsPage() {
             {RESPONSE_SAMPLE}
           </pre>
           <p className="text-[12px] text-muted-foreground">
-            Each hop is labelled with its mechanism: <code className="font-mono">http</code>,{" "}
-            <code className="font-mono">meta-refresh</code>, <code className="font-mono">javascript</code>,{" "}
-            <code className="font-mono">browser</code> or <code className="font-mono">final</code>. When a hop
+            Each hop is labelled with its mechanism: <code className="font-mono">http-redirect</code>,{" "}
+            <code className="font-mono">meta-refresh</code>, <code className="font-mono">javascript-redirect</code>,{" "}
+            <code className="font-mono">browser-navigation</code> or <code className="font-mono">final-response</code>. When a hop
             cannot be safely followed, the exact reason is returned instead of a fake completion, and{" "}
             <code className="font-mono">finalDestinationConfirmed</code> is <code className="font-mono">false</code>.
           </p>
