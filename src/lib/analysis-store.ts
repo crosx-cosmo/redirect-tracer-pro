@@ -46,9 +46,7 @@ export async function saveAnalyses(results: RedirectAnalysis[]): Promise<ShareId
 }
 
 export function saveAnalysesInBackground(results: RedirectAnalysis[]): void {
-  void saveAnalyses(results).catch((err) =>
-    console.warn("[analysis-store] save failed:", err),
-  );
+  void saveAnalyses(results).catch((err) => console.warn("[analysis-store] save failed:", err));
 }
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -66,4 +64,3 @@ export async function loadSharedAnalysis(id: string): Promise<RedirectAnalysis |
   if (error) throw new Error(error.message);
   return (data?.result as RedirectAnalysis | undefined) ?? null;
 }
-

@@ -133,7 +133,12 @@ export function buildTrackingReport(hops: RedirectHop[]): TrackingReport {
 
 export function buildIssues(
   hops: RedirectHop[],
-  opts: { redirectLoop: boolean; truncated: boolean; tracking: TrackingReport; error?: string | null },
+  opts: {
+    redirectLoop: boolean;
+    truncated: boolean;
+    tracking: TrackingReport;
+    error?: string | null;
+  },
 ): AnalysisIssue[] {
   const issues: AnalysisIssue[] = [];
   const push = (i: AnalysisIssue) => issues.push(i);
@@ -164,7 +169,8 @@ export function buildIssues(
         id: `blocked-${hop.index}`,
         level: "error",
         title: "Destination blocked for safety",
-        detail: hop.blockedReason ?? "This destination failed the safety check and was not requested.",
+        detail:
+          hop.blockedReason ?? "This destination failed the safety check and was not requested.",
         hopIndex: hop.index,
       });
     }
@@ -173,7 +179,9 @@ export function buildIssues(
         id: `unresolved-${hop.index}`,
         level: "warning",
         title: "Client-side redirect could not be followed",
-        detail: hop.blockedReason ?? "A navigation was detected but its destination could not be resolved.",
+        detail:
+          hop.blockedReason ??
+          "A navigation was detected but its destination could not be resolved.",
         hopIndex: hop.index,
       });
     }

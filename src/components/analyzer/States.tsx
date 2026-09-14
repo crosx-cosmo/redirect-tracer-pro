@@ -43,7 +43,6 @@ export function LoadingState() {
 export function EmptyState() {
   return (
     <section className="animate-reveal relative overflow-hidden rounded-2xl border border-dashed border-hairline bg-surface/70 p-8 text-center">
-      
       <div className="relative">
         <div className="mx-auto flex size-12 items-center justify-center rounded-xl bg-brand-gradient shadow-glow">
           <Radar className="size-6 text-brand-foreground" />

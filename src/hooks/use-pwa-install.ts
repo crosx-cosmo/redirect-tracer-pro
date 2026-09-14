@@ -103,7 +103,8 @@ export function usePwaInstall() {
     platform,
     canPromptNatively: deferredPrompt !== null,
     /** Show the compact CTA: not installed, and either native prompt available or manual instructions are useful. */
-    canShowCta: mounted && !installed && (deferredPrompt !== null || platform === "ios" || !dismissed),
+    canShowCta:
+      mounted && !installed && (deferredPrompt !== null || platform === "ios" || !dismissed),
     promptInstall,
     dismiss,
   };

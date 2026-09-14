@@ -46,7 +46,6 @@ function applyTheme(theme: Theme) {
   meta.setAttribute("content", THEME_COLORS[theme]);
 }
 
-
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<Theme>("light");
   const [mounted, setMounted] = useState(false);

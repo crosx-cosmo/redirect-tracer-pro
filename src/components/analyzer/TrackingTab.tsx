@@ -1,4 +1,11 @@
-import { ArrowRight, CheckCircle2, MinusCircle, PencilLine, PlusCircle, TriangleAlert } from "lucide-react";
+import {
+  ArrowRight,
+  CheckCircle2,
+  MinusCircle,
+  PencilLine,
+  PlusCircle,
+  TriangleAlert,
+} from "lucide-react";
 import type { CSSProperties } from "react";
 
 import { Badge } from "@/components/ui/badge";

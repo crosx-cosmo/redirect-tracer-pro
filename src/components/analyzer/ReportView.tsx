@@ -47,7 +47,12 @@ function formatDate(iso: string | undefined) {
 function slug(url: string) {
   try {
     const u = new URL(url);
-    return (u.hostname + u.pathname).replace(/[^a-z0-9]+/gi, "-").replace(/^-+|-+$/g, "").slice(0, 60) || "report";
+    return (
+      (u.hostname + u.pathname)
+        .replace(/[^a-z0-9]+/gi, "-")
+        .replace(/^-+|-+$/g, "")
+        .slice(0, 60) || "report"
+    );
   } catch {
     return "report";
   }
@@ -155,16 +160,11 @@ export function ReportView({
           </p>
         ) : null}
 
-
         <SummaryCards result={result} />
       </section>
 
       {/* Collapsible detail sections */}
-      <Accordion
-        type="multiple"
-        defaultValue={["chain", "seo"]}
-        className="space-y-3"
-      >
+      <Accordion type="multiple" defaultValue={["chain", "seo"]} className="space-y-3">
         {SECTIONS.map((section, i) => (
           <AccordionItem
             key={section.value}

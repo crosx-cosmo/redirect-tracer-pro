@@ -40,7 +40,6 @@ function SharedReportPage() {
     <div className="bg-hero min-h-screen">
       <header className="app-safe-top sticky top-0 z-30 border-b border-hairline bg-background/70 backdrop-blur-xl">
         <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-3 sm:gap-4 sm:px-6">
-
           <Link to="/" aria-label="CROSX home" className="flex shrink-0 items-center">
             <img
               src={CROSX_LOGO_URL}
@@ -63,7 +62,6 @@ function SharedReportPage() {
             <InstallAppButton />
             <ThemeToggle />
           </div>
-
         </div>
       </header>
 

@@ -26,7 +26,8 @@ export const Route = createFileRoute("/api-docs")({
   component: ApiDocsPage,
 });
 
-const ENDPOINT = "https://project--af61ac39-014c-4107-9369-28f94f73eb66.lovable.app/api/public/trace";
+const ENDPOINT =
+  "https://project--af61ac39-014c-4107-9369-28f94f73eb66.lovable.app/api/public/trace";
 
 const SNIPPETS: { id: string; label: string; code: string }[] = [
   {
@@ -194,7 +195,9 @@ function ApiDocsPage() {
         </section>
 
         <section className="panel space-y-4 p-4 shadow-elevated sm:p-6">
-          <h3 className="text-[13.5px] font-semibold tracking-tight text-foreground">Code examples</h3>
+          <h3 className="text-[13.5px] font-semibold tracking-tight text-foreground">
+            Code examples
+          </h3>
           <div className="grid gap-3 md:grid-cols-2">
             {SNIPPETS.map((s) => (
               <div key={s.id} className="rounded-xl border border-hairline bg-surface/70">
@@ -233,20 +236,26 @@ function ApiDocsPage() {
         </section>
 
         <section className="panel space-y-3 p-4 shadow-elevated sm:p-6">
-          <h3 className="text-[13.5px] font-semibold tracking-tight text-foreground">Response shape</h3>
+          <h3 className="text-[13.5px] font-semibold tracking-tight text-foreground">
+            Response shape
+          </h3>
           <pre className="overflow-x-auto rounded-xl border border-hairline bg-surface/70 px-3 py-3 font-mono text-[11.5px] leading-relaxed text-foreground">
             {RESPONSE_SAMPLE}
           </pre>
           <p className="text-[12px] text-muted-foreground">
-            Each hop is labelled with its mechanism: <code className="font-mono">http-redirect</code>,{" "}
-            <code className="font-mono">meta-refresh</code>, <code className="font-mono">javascript-redirect</code>,{" "}
-            <code className="font-mono">browser-navigation</code> or <code className="font-mono">final-response</code>. When a hop
-            cannot be safely followed, the exact reason is returned instead of a fake completion, and{" "}
-            <code className="font-mono">finalDestinationConfirmed</code> is <code className="font-mono">false</code>.
+            Each hop is labelled with its mechanism:{" "}
+            <code className="font-mono">http-redirect</code>,{" "}
+            <code className="font-mono">meta-refresh</code>,{" "}
+            <code className="font-mono">javascript-redirect</code>,{" "}
+            <code className="font-mono">browser-navigation</code> or{" "}
+            <code className="font-mono">final-response</code>. When a hop cannot be safely followed,
+            the exact reason is returned instead of a fake completion, and{" "}
+            <code className="font-mono">finalDestinationConfirmed</code> is{" "}
+            <code className="font-mono">false</code>.
           </p>
           <p className="text-[12px] text-muted-foreground">
-            Errors return a JSON <code className="font-mono">error</code> field with status 400 (bad input),
-            429 (rate limited) or 500 (trace failure).
+            Errors return a JSON <code className="font-mono">error</code> field with status 400 (bad
+            input), 429 (rate limited) or 500 (trace failure).
           </p>
         </section>
       </main>

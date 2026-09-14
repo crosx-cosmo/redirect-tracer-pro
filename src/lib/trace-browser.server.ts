@@ -62,15 +62,18 @@ export async function traceWithBrowser(
   const base = process.env["BROWSERLESS_BASE_URL"] ?? "https://production-sfo.browserless.io";
 
   try {
-    const response = await fetch(`${base.replace(/\/$/, "")}/function?token=${encodeURIComponent(token)}`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        code: RENDER_SCRIPT,
-        context: { url, timeout: Math.max(5000, timeoutMs - 2000) },
-      }),
-      signal: AbortSignal.timeout(timeoutMs),
-    });
+    const response = await fetch(
+      `${base.replace(/\/$/, "")}/function?token=${encodeURIComponent(token)}`,
+      {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          code: RENDER_SCRIPT,
+          context: { url, timeout: Math.max(5000, timeoutMs - 2000) },
+        }),
+        signal: AbortSignal.timeout(timeoutMs),
+      },
+    );
 
     if (!response.ok) {
       const detail = (await response.text().catch(() => "")).slice(0, 200);

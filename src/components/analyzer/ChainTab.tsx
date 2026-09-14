@@ -62,7 +62,6 @@ function mechanismIcon(mechanism: HopMechanism | undefined) {
   }
 }
 
-
 const dotTone: Record<string, string> = {
   success: "bg-success",
   info: "bg-info",
@@ -226,7 +225,9 @@ export function ChainTab({ result }: { result: RedirectAnalysis }) {
                 {hop.nextUrl ? (
                   <div className="mt-3 rounded-lg border border-hairline bg-surface-muted px-3 py-2">
                     <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-                      {hop.mechanism === "http-redirect" ? "Location header → destination" : "Detected destination"}
+                      {hop.mechanism === "http-redirect"
+                        ? "Location header → destination"
+                        : "Detected destination"}
                     </p>
                     <p className="mt-0.5 break-all font-mono text-xs text-foreground">
                       {hop.nextUrl}
@@ -255,7 +256,6 @@ export function ChainTab({ result }: { result: RedirectAnalysis }) {
                   </p>
                 ) : null}
               </div>
-
             </li>
           );
         })}

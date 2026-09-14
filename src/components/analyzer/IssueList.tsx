@@ -5,7 +5,10 @@ import { cn } from "@/lib/utils";
 import type { AnalysisIssue } from "@/lib/redirect-types";
 
 const config = {
-  error: { icon: ShieldAlert, className: "border-destructive/30 bg-destructive/8 text-destructive" },
+  error: {
+    icon: ShieldAlert,
+    className: "border-destructive/30 bg-destructive/8 text-destructive",
+  },
   warning: {
     icon: AlertTriangle,
     className: "border-warning/40 bg-warning/10 text-warning-foreground",

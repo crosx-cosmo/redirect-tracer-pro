@@ -45,7 +45,9 @@ export function toCsv(results: RedirectAnalysis[]): string {
         hop.location ?? "",
         hop.server ?? "",
         hop.ip ?? "",
-      ].map(csvCell).join(","),
+      ]
+        .map(csvCell)
+        .join(","),
     ),
   );
   return [header.map(csvCell).join(","), ...rows].join("\n");
@@ -76,7 +78,9 @@ export function toReport(results: RedirectAnalysis[]): string {
           (hop) =>
             `  ${hop.index + 1}. [${hop.status || "—"} ${hop.mechanismLabel ?? hop.redirectType}] ${hop.url} (${hop.responseTimeMs} ms, ${hop.protocol.toUpperCase()}${hop.server ? `, ${hop.server}` : ""})` +
             (hop.mechanismDetail ? `\n     Mechanism: ${hop.mechanismDetail}` : "") +
-            (hop.nextUrl ?? hop.location ? `\n     Destination: ${hop.nextUrl ?? hop.location}` : "") +
+            ((hop.nextUrl ?? hop.location)
+              ? `\n     Destination: ${hop.nextUrl ?? hop.location}`
+              : "") +
             (hop.blockedReason ? `\n     Not followed: ${hop.blockedReason}` : ""),
         ),
         "",
@@ -89,7 +93,9 @@ export function toReport(results: RedirectAnalysis[]): string {
         "",
         "Findings:",
         ...(result.issues.length
-          ? result.issues.map((issue) => `  [${issue.level.toUpperCase()}] ${issue.title} — ${issue.detail}`)
+          ? result.issues.map(
+              (issue) => `  [${issue.level.toUpperCase()}] ${issue.title} — ${issue.detail}`,
+            )
           : ["  None"]),
         "",
         "Tracking:",
