@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RIdRouteImport } from './routes/r.$id'
+import { Route as ApiPublicTraceRouteImport } from './routes/api/public/trace'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +23,40 @@ const RIdRoute = RIdRouteImport.update({
   path: '/r/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicTraceRoute = ApiPublicTraceRouteImport.update({
+  id: '/api/public/trace',
+  path: '/api/public/trace',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/r/$id': typeof RIdRoute
+  '/api/public/trace': typeof ApiPublicTraceRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/r/$id': typeof RIdRoute
+  '/api/public/trace': typeof ApiPublicTraceRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/r/$id': typeof RIdRoute
+  '/api/public/trace': typeof ApiPublicTraceRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/r/$id'
+  fullPaths: '/' | '/r/$id' | '/api/public/trace'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/r/$id'
-  id: '__root__' | '/' | '/r/$id'
+  to: '/' | '/r/$id' | '/api/public/trace'
+  id: '__root__' | '/' | '/r/$id' | '/api/public/trace'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   RIdRoute: typeof RIdRoute
+  ApiPublicTraceRoute: typeof ApiPublicTraceRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/trace': {
+      id: '/api/public/trace'
+      path: '/api/public/trace'
+      fullPath: '/api/public/trace'
+      preLoaderRoute: typeof ApiPublicTraceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   RIdRoute: RIdRoute,
+  ApiPublicTraceRoute: ApiPublicTraceRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
