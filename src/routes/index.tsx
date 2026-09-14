@@ -14,6 +14,7 @@ import { InstallAppButton } from "@/components/InstallAppButton";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { analysisKey, type ShareIdMap } from "@/lib/analysis-store";
 import { activeBackend, analyzeUrls, demoAnalysis } from "@/lib/redirect-service";
