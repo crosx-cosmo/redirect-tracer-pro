@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { Activity, ShieldCheck } from "lucide-react";
+import { Activity, Braces, ShieldCheck } from "lucide-react";
 
 import { CROSX_LOGO_URL } from "@/lib/brand";
 import { useState } from "react";
@@ -14,6 +14,7 @@ import { InstallAppButton } from "@/components/InstallAppButton";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { analysisKey, type ShareIdMap } from "@/lib/analysis-store";
 import { activeBackend, analyzeUrls, demoAnalysis } from "@/lib/redirect-service";
@@ -90,6 +91,12 @@ function AnalyzerPage() {
               </TooltipTrigger>
               <TooltipContent>Requests are performed server-side, never in the browser</TooltipContent>
             </Tooltip>
+            <Button asChild variant="subtle" size="sm">
+              <a href="/api-docs">
+                <Braces className="size-3.5" />
+                <span className="hidden sm:inline">API</span>
+              </a>
+            </Button>
             <InstallAppButton />
             <ThemeToggle />
 
