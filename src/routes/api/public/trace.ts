@@ -130,6 +130,7 @@ export const Route = createFileRoute("/api/public/trace")({
           .map((v) => v.trim())
           .filter(Boolean)
           .slice(0, MAX_URLS + 1);
+        if (!urls.length) return json({ ok: true, usage: USAGE });
         return handle(request, urls);
       },
       POST: async ({ request }) => {
