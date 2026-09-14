@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { Activity, ShieldCheck } from "lucide-react";
+import { Activity, Braces, ShieldCheck } from "lucide-react";
 
 import { CROSX_LOGO_URL } from "@/lib/brand";
 import { useState } from "react";
