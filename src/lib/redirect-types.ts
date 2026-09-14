@@ -41,7 +41,6 @@ export interface RedirectHop {
   addresses?: string[];
 }
 
-
 export interface AnalysisIssue {
   id: string;
   level: IssueLevel;
@@ -110,4 +109,3 @@ export interface RedirectAnalysis {
   /** Reason the browser fallback could not run, when it was needed. */
   browserFallbackNote?: string | null;
 }
-

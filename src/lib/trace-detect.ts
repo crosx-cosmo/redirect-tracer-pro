@@ -28,7 +28,10 @@ export interface DynamicRedirectHint {
 }
 
 function clean(value: string): string {
-  return value.trim().replace(/^["'`]|["'`]$/g, "").trim();
+  return value
+    .trim()
+    .replace(/^["'`]|["'`]$/g, "")
+    .trim();
 }
 
 function decodeEntities(value: string): string {
@@ -87,20 +90,44 @@ function decodeAtob(html: string): ClientRedirectSignal | null {
 }
 
 const JS_PATTERNS: Array<{ re: RegExp; method: string }> = [
-  { re: /(?:window|document|top|self|parent)?\.?location\s*\.\s*replace\s*\(\s*(["'`])([^"'`]+)\1/i, method: "location.replace()" },
-  { re: /(?:window|document|top|self|parent)?\.?location\s*\.\s*assign\s*\(\s*(["'`])([^"'`]+)\1/i, method: "location.assign()" },
-  { re: /(?:window|document|top|self|parent)\s*\.\s*location\s*\.\s*href\s*=\s*(["'`])([^"'`]+)\1/i, method: "window.location.href" },
-  { re: /(?:window|document|top|self|parent)\s*\.\s*location\s*=\s*(["'`])([^"'`]+)\1/i, method: "window.location" },
+  {
+    re: /(?:window|document|top|self|parent)?\.?location\s*\.\s*replace\s*\(\s*(["'`])([^"'`]+)\1/i,
+    method: "location.replace()",
+  },
+  {
+    re: /(?:window|document|top|self|parent)?\.?location\s*\.\s*assign\s*\(\s*(["'`])([^"'`]+)\1/i,
+    method: "location.assign()",
+  },
+  {
+    re: /(?:window|document|top|self|parent)\s*\.\s*location\s*\.\s*href\s*=\s*(["'`])([^"'`]+)\1/i,
+    method: "window.location.href",
+  },
+  {
+    re: /(?:window|document|top|self|parent)\s*\.\s*location\s*=\s*(["'`])([^"'`]+)\1/i,
+    method: "window.location",
+  },
   { re: /\blocation\s*\.\s*href\s*=\s*(["'`])([^"'`]+)\1/i, method: "location.href" },
   { re: /\bdocument\s*\.\s*location\s*=\s*(["'`])([^"'`]+)\1/i, method: "document.location" },
-  { re: /\blocation\s*\.\s*(?:assign|replace)\s*\(\s*(["'`])([^"'`]+)\1/i, method: "location navigation" },
+  {
+    re: /\blocation\s*\.\s*(?:assign|replace)\s*\(\s*(["'`])([^"'`]+)\1/i,
+    method: "location navigation",
+  },
   { re: /\bwindow\s*\.\s*open\s*\(\s*(["'`])(https?:\/\/[^"'`]+)\1/i, method: "window.open()" },
 ];
 
 const DYNAMIC_HINTS: Array<{ re: RegExp; method: string }> = [
-  { re: /location\s*\.\s*(?:replace|assign)\s*\(\s*[A-Za-z_$]/, method: "location.replace()/assign() with a computed value" },
-  { re: /location(?:\s*\.\s*href)?\s*=\s*[A-Za-z_$][\w$.[\]]*\s*[;\n]/, method: "location assignment from a variable" },
-  { re: /history\s*\.\s*(?:pushState|replaceState)\s*\(/, method: "history.pushState()/replaceState()" },
+  {
+    re: /location\s*\.\s*(?:replace|assign)\s*\(\s*[A-Za-z_$]/,
+    method: "location.replace()/assign() with a computed value",
+  },
+  {
+    re: /location(?:\s*\.\s*href)?\s*=\s*[A-Za-z_$][\w$.[\]]*\s*[;\n]/,
+    method: "location assignment from a variable",
+  },
+  {
+    re: /history\s*\.\s*(?:pushState|replaceState)\s*\(/,
+    method: "history.pushState()/replaceState()",
+  },
   { re: /\.submit\s*\(\s*\)/, method: "auto-submitted form" },
 ];
 

@@ -59,7 +59,6 @@ function AnalyzerPage() {
     <div className="bg-hero min-h-screen">
       <header className="app-safe-top sticky top-0 z-30 border-b border-hairline bg-background/70 backdrop-blur-xl">
         <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-3 sm:gap-4 sm:px-6">
-
           <a href="/" aria-label="CROSX home" className="flex shrink-0 items-center">
             <img
               src={CROSX_LOGO_URL}
@@ -89,7 +88,9 @@ function AnalyzerPage() {
                   {activeBackend() === "external" ? "External API" : "Live server tracing"}
                 </Badge>
               </TooltipTrigger>
-              <TooltipContent>Requests are performed server-side, never in the browser</TooltipContent>
+              <TooltipContent>
+                Requests are performed server-side, never in the browser
+              </TooltipContent>
             </Tooltip>
             <Button asChild variant="subtle" size="sm">
               <a href="/api-docs">
@@ -99,7 +100,6 @@ function AnalyzerPage() {
             </Button>
             <InstallAppButton />
             <ThemeToggle />
-
           </div>
         </div>
       </header>
@@ -168,7 +168,9 @@ function AnalyzerPage() {
           : null}
 
         <footer className="border-t border-hairline pt-4 text-center font-mono text-[11px] text-muted-foreground">
-          Requests run server-side behind SSRF protection, with a 20-hop limit, a 15 s per-hop timeout and a 55 s overall budget. Hops that cannot be safely followed are reported with the exact reason.
+          Requests run server-side behind SSRF protection, with a 20-hop limit, a 15 s per-hop
+          timeout and a 55 s overall budget. Hops that cannot be safely followed are reported with
+          the exact reason.
         </footer>
       </main>
     </div>

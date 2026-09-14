@@ -39,7 +39,12 @@ const bodySchema = z.object({
 function json(data: unknown, status = 200, extra: Record<string, string> = {}) {
   return new Response(JSON.stringify(data, null, 2), {
     status,
-    headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store", ...CORS, ...extra },
+    headers: {
+      "content-type": "application/json; charset=utf-8",
+      "cache-control": "no-store",
+      ...CORS,
+      ...extra,
+    },
   });
 }
 
@@ -70,7 +75,11 @@ async function handle(request: Request, urls: string[]) {
   };
   if (!limit.ok) {
     return json(
-      { error: "Rate limit exceeded. Try again shortly.", limit: RATE_LIMIT, windowSeconds: WINDOW_MS / 1000 },
+      {
+        error: "Rate limit exceeded. Try again shortly.",
+        limit: RATE_LIMIT,
+        windowSeconds: WINDOW_MS / 1000,
+      },
       429,
       headers,
     );
@@ -102,7 +111,10 @@ export const Route = createFileRoute("/api/public/trace")({
         try {
           parsed = bodySchema.parse(await request.json());
         } catch {
-          return json({ error: "Invalid JSON body. Expected { url: string } or { urls: string[] }." }, 400);
+          return json(
+            { error: "Invalid JSON body. Expected { url: string } or { urls: string[] }." },
+            400,
+          );
         }
         const urls = [...(parsed.url ? [parsed.url] : []), ...(parsed.urls ?? [])];
         return handle(request, urls);

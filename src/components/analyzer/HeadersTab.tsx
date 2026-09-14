@@ -26,7 +26,9 @@ export function HeadersTab({ result }: { result: RedirectAnalysis }) {
           <AccordionTrigger className="gap-2 py-3 hover:no-underline">
             <span className="flex min-w-0 items-center gap-2">
               <StatusBadge status={hop.status} />
-              <span className="truncate font-mono text-[11px] text-muted-foreground">{hop.url}</span>
+              <span className="truncate font-mono text-[11px] text-muted-foreground">
+                {hop.url}
+              </span>
             </span>
           </AccordionTrigger>
           <AccordionContent>
@@ -45,10 +47,7 @@ export function HeadersTab({ result }: { result: RedirectAnalysis }) {
               <table className="w-full text-left text-xs">
                 <tbody>
                   {Object.entries(hop.headers).map(([key, value], index) => (
-                    <tr
-                      key={key}
-                      className={index % 2 ? "bg-surface-muted" : "bg-surface"}
-                    >
+                    <tr key={key} className={index % 2 ? "bg-surface-muted" : "bg-surface"}>
                       <td className="w-1/3 border-b border-hairline px-3 py-2 align-top font-mono font-medium text-brand">
                         {key}
                       </td>

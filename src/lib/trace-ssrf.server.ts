@@ -11,13 +11,7 @@
 const ALLOWED_PROTOCOLS = new Set(["http:", "https:"]);
 const ALLOWED_PORTS = new Set(["", "80", "443", "8080", "8443", "8000"]);
 
-const BLOCKED_HOST_SUFFIXES = [
-  ".localhost",
-  ".local",
-  ".internal",
-  ".home.arpa",
-  ".onion",
-];
+const BLOCKED_HOST_SUFFIXES = [".localhost", ".local", ".internal", ".home.arpa", ".onion"];
 
 const BLOCKED_HOSTS = new Set([
   "localhost",

@@ -27,7 +27,8 @@ const SEEDS: DemoHopSeed[] = [
     status: 302,
     statusText: "Found",
     time: 246,
-    location: "https://tracker.example/r/9f2?click_id=abc123&aff_id=5541&sub2=retarget&utm_source=demo",
+    location:
+      "https://tracker.example/r/9f2?click_id=abc123&aff_id=5541&sub2=retarget&utm_source=demo",
     server: "cloudflare",
     ip: "198.51.100.24",
   },

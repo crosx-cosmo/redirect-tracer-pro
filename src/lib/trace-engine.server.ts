@@ -14,7 +14,14 @@
  *  - loops and dead ends are detected and reported
  *  - when a hop cannot be followed, the exact reason is attached to it
  */
-import { assemble, isRedirect, normalizeUrl, paramsOf, protocolOf, redirectTypeLabel } from "./redirect-analysis";
+import {
+  assemble,
+  isRedirect,
+  normalizeUrl,
+  paramsOf,
+  protocolOf,
+  redirectTypeLabel,
+} from "./redirect-analysis";
 import {
   detectClientRedirect,
   extractPageMeta,
@@ -80,7 +87,9 @@ interface HopDraft extends RedirectHop {
   addresses: string[];
 }
 
-function makeHop(partial: Partial<HopDraft> & { index: number; url: string; mechanism: HopMechanism }): HopDraft {
+function makeHop(
+  partial: Partial<HopDraft> & { index: number; url: string; mechanism: HopMechanism },
+): HopDraft {
   return {
     index: partial.index,
     url: partial.url,
@@ -235,7 +244,8 @@ export async function traceUrl(rawUrl: string): Promise<RedirectAnalysis> {
         response.headers.get("x-served-by") ??
         response.headers.get("x-amz-cf-pop") ??
         response.headers.get("cf-ray") ??
-        (verdict.addresses[0] ?? null),
+        verdict.addresses[0] ??
+        null,
       addresses: verdict.addresses,
     };
 
@@ -373,7 +383,11 @@ export async function traceUrl(rawUrl: string): Promise<RedirectAnalysis> {
               elapsedMs: 0,
             };
 
-      if (rendered.ok && rendered.finalUrl && canonicalKey(rendered.finalUrl) !== canonicalKey(current)) {
+      if (
+        rendered.ok &&
+        rendered.finalUrl &&
+        canonicalKey(rendered.finalUrl) !== canonicalKey(current)
+      ) {
         browserFallbackUsed = true;
         hops.push(
           makeHop({
