@@ -90,6 +90,12 @@ function AnalyzerPage() {
               </TooltipTrigger>
               <TooltipContent>Requests are performed server-side, never in the browser</TooltipContent>
             </Tooltip>
+            <Button asChild variant="subtle" size="sm">
+              <a href="/api-docs">
+                <Braces className="size-3.5" />
+                <span className="hidden sm:inline">API</span>
+              </a>
+            </Button>
             <InstallAppButton />
             <ThemeToggle />
 

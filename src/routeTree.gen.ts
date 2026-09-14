@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiDocsRouteImport } from './routes/api-docs'
 import { Route as RIdRouteImport } from './routes/r.$id'
 import { Route as ApiPublicTraceRouteImport } from './routes/api/public/trace'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDocsRoute = ApiDocsRouteImport.update({
+  id: '/api-docs',
+  path: '/api-docs',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RIdRoute = RIdRouteImport.update({
@@ -31,30 +37,34 @@ const ApiPublicTraceRoute = ApiPublicTraceRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/api-docs': typeof ApiDocsRoute
   '/r/$id': typeof RIdRoute
   '/api/public/trace': typeof ApiPublicTraceRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/api-docs': typeof ApiDocsRoute
   '/r/$id': typeof RIdRoute
   '/api/public/trace': typeof ApiPublicTraceRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/api-docs': typeof ApiDocsRoute
   '/r/$id': typeof RIdRoute
   '/api/public/trace': typeof ApiPublicTraceRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/r/$id' | '/api/public/trace'
+  fullPaths: '/' | '/api-docs' | '/r/$id' | '/api/public/trace'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/r/$id' | '/api/public/trace'
-  id: '__root__' | '/' | '/r/$id' | '/api/public/trace'
+  to: '/' | '/api-docs' | '/r/$id' | '/api/public/trace'
+  id: '__root__' | '/' | '/api-docs' | '/r/$id' | '/api/public/trace'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApiDocsRoute: typeof ApiDocsRoute
   RIdRoute: typeof RIdRoute
   ApiPublicTraceRoute: typeof ApiPublicTraceRoute
 }
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api-docs': {
+      id: '/api-docs'
+      path: '/api-docs'
+      fullPath: '/api-docs'
+      preLoaderRoute: typeof ApiDocsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/r/$id': {
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApiDocsRoute: ApiDocsRoute,
   RIdRoute: RIdRoute,
   ApiPublicTraceRoute: ApiPublicTraceRoute,
 }
