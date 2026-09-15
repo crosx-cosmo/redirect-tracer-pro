@@ -254,6 +254,11 @@ function ApiDocsPage() {
             <code className="font-mono">false</code>.
           </p>
           <p className="text-[12px] text-muted-foreground">
+            Every response carries <code className="font-mono">x-ratelimit-*</code> headers, and a
+            plain <code className="font-mono">GET /api/public/trace</code> with no URL returns a
+            machine-readable usage document.
+          </p>
+          <p className="text-[12px] text-muted-foreground">
             Errors return a JSON <code className="font-mono">error</code> field with status 400 (bad
             input), 429 (rate limited) or 500 (trace failure).
           </p>
