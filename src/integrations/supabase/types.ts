@@ -14,6 +14,187 @@ export type Database = {
   }
   public: {
     Tables: {
+      link_clicks: {
+        Row: {
+          browser: string | null
+          clicked_at: string
+          country: string | null
+          device: string | null
+          id: number
+          is_bot: boolean
+          link_id: string
+          os: string | null
+          referrer_host: string | null
+          region: string | null
+          rule_id: string | null
+          utm_campaign: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          visitor_hash: string
+        }
+        Insert: {
+          browser?: string | null
+          clicked_at?: string
+          country?: string | null
+          device?: string | null
+          id?: number
+          is_bot?: boolean
+          link_id: string
+          os?: string | null
+          referrer_host?: string | null
+          region?: string | null
+          rule_id?: string | null
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          visitor_hash: string
+        }
+        Update: {
+          browser?: string | null
+          clicked_at?: string
+          country?: string | null
+          device?: string | null
+          id?: number
+          is_bot?: boolean
+          link_id?: string
+          os?: string | null
+          referrer_host?: string | null
+          region?: string | null
+          rule_id?: string | null
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          visitor_hash?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "link_clicks_link_id_fkey"
+            columns: ["link_id"]
+            isOneToOne: false
+            referencedRelation: "short_links"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      monitor_checks: {
+        Row: {
+          changes: string[]
+          checked_at: string
+          error: string | null
+          final_url: string | null
+          hops: number | null
+          https: boolean | null
+          id: number
+          loop: boolean | null
+          monitor_id: string
+          ms: number | null
+          state: string
+          status: number | null
+        }
+        Insert: {
+          changes?: string[]
+          checked_at?: string
+          error?: string | null
+          final_url?: string | null
+          hops?: number | null
+          https?: boolean | null
+          id?: number
+          loop?: boolean | null
+          monitor_id: string
+          ms?: number | null
+          state: string
+          status?: number | null
+        }
+        Update: {
+          changes?: string[]
+          checked_at?: string
+          error?: string | null
+          final_url?: string | null
+          hops?: number | null
+          https?: boolean | null
+          id?: number
+          loop?: boolean | null
+          monitor_id?: string
+          ms?: number | null
+          state?: string
+          status?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "monitor_checks_monitor_id_fkey"
+            columns: ["monitor_id"]
+            isOneToOne: false
+            referencedRelation: "monitors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      monitors: {
+        Row: {
+          avg_ms: number | null
+          created_at: string
+          enabled: boolean
+          id: string
+          interval_minutes: number
+          label: string | null
+          last_alert_at: string | null
+          last_alert_key: string | null
+          last_checked_at: string | null
+          last_error: string | null
+          last_final_url: string | null
+          last_hops: number | null
+          last_ms: number | null
+          last_status: number | null
+          next_check_at: string
+          owner_hash: string
+          state: string
+          url: string
+          webhook_url: string | null
+        }
+        Insert: {
+          avg_ms?: number | null
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          interval_minutes?: number
+          label?: string | null
+          last_alert_at?: string | null
+          last_alert_key?: string | null
+          last_checked_at?: string | null
+          last_error?: string | null
+          last_final_url?: string | null
+          last_hops?: number | null
+          last_ms?: number | null
+          last_status?: number | null
+          next_check_at?: string
+          owner_hash: string
+          state?: string
+          url: string
+          webhook_url?: string | null
+        }
+        Update: {
+          avg_ms?: number | null
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          interval_minutes?: number
+          label?: string | null
+          last_alert_at?: string | null
+          last_alert_key?: string | null
+          last_checked_at?: string | null
+          last_error?: string | null
+          last_final_url?: string | null
+          last_hops?: number | null
+          last_ms?: number | null
+          last_status?: number | null
+          next_check_at?: string
+          owner_hash?: string
+          state?: string
+          url?: string
+          webhook_url?: string | null
+        }
+        Relationships: []
+      }
       redirect_analyses: {
         Row: {
           created_at: string
@@ -66,6 +247,7 @@ export type Database = {
           id: string
           last_clicked_at: string | null
           owner_hash: string
+          rules: Json
           slug: string
         }
         Insert: {
@@ -77,6 +259,7 @@ export type Database = {
           id?: string
           last_clicked_at?: string | null
           owner_hash: string
+          rules?: Json
           slug: string
         }
         Update: {
@@ -88,6 +271,7 @@ export type Database = {
           id?: string
           last_clicked_at?: string | null
           owner_hash?: string
+          rules?: Json
           slug?: string
         }
         Relationships: []
@@ -98,6 +282,16 @@ export type Database = {
     }
     Functions: {
       _sl_hash: { Args: { token: string }; Returns: string }
+      create_monitor: {
+        Args: {
+          p_interval: number
+          p_label: string
+          p_owner: string
+          p_url: string
+          p_webhook: string
+        }
+        Returns: string
+      }
       create_short_link: {
         Args: { p_destination: string; p_owner: string; p_slug: string }
         Returns: {
@@ -109,6 +303,7 @@ export type Database = {
           id: string
           last_clicked_at: string | null
           owner_hash: string
+          rules: Json
           slug: string
         }
         SetofOptions: {
@@ -118,9 +313,64 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      delete_monitor: {
+        Args: { p_id: string; p_owner: string }
+        Returns: boolean
+      }
       delete_short_link: {
         Args: { p_id: string; p_owner: string }
         Returns: boolean
+      }
+      export_link_clicks: {
+        Args: { p_from: string; p_id: string; p_owner: string; p_to: string }
+        Returns: {
+          browser: string
+          clicked_at: string
+          country: string
+          device: string
+          is_bot: boolean
+          os: string
+          referrer_host: string
+          region: string
+          rule_id: string
+          utm_campaign: string
+          utm_medium: string
+          utm_source: string
+        }[]
+      }
+      get_redirect_target: {
+        Args: { p_slug: string }
+        Returns: {
+          destination: string
+          id: string
+          rules: Json
+        }[]
+      }
+      link_analytics: {
+        Args: { p_from: string; p_id: string; p_owner: string; p_to: string }
+        Returns: Json
+      }
+      list_monitors: {
+        Args: { p_owner: string }
+        Returns: {
+          avg_ms: number
+          created_at: string
+          enabled: boolean
+          has_webhook: boolean
+          id: string
+          interval_minutes: number
+          label: string
+          last_alert_at: string
+          last_checked_at: string
+          last_error: string
+          last_final_url: string
+          last_hops: number
+          last_ms: number
+          last_status: number
+          next_check_at: string
+          state: string
+          url: string
+        }[]
       }
       list_short_links: {
         Args: { p_owner: string }
@@ -129,18 +379,57 @@ export type Database = {
           created_at: string
           destination: string
           enabled: boolean
-          expires_at: string | null
+          expires_at: string
           id: string
-          last_clicked_at: string | null
-          owner_hash: string
+          last_clicked_at: string
+          rules: Json
           slug: string
+        }[]
+      }
+      monitor_history: {
+        Args: { p_id: string; p_owner: string }
+        Returns: {
+          changes: string[]
+          checked_at: string
+          error: string | null
+          final_url: string | null
+          hops: number | null
+          https: boolean | null
+          id: number
+          loop: boolean | null
+          monitor_id: string
+          ms: number | null
+          state: string
+          status: number | null
         }[]
         SetofOptions: {
           from: "*"
-          to: "short_links"
+          to: "monitor_checks"
           isOneToOne: false
           isSetofReturn: true
         }
+      }
+      owns_monitor: {
+        Args: { p_id: string; p_owner: string }
+        Returns: boolean
+      }
+      record_link_click: {
+        Args: {
+          p_browser: string
+          p_country: string
+          p_device: string
+          p_is_bot: boolean
+          p_link_id: string
+          p_os: string
+          p_referrer: string
+          p_region: string
+          p_rule: string
+          p_utm_campaign: string
+          p_utm_medium: string
+          p_utm_source: string
+          p_visitor: string
+        }
+        Returns: undefined
       }
       resolve_short_link: { Args: { p_slug: string }; Returns: string }
       set_short_link_enabled: {
@@ -149,6 +438,19 @@ export type Database = {
       }
       set_short_link_expiry: {
         Args: { p_expires_at: string; p_id: string; p_owner: string }
+        Returns: boolean
+      }
+      set_short_link_rules: {
+        Args: { p_id: string; p_owner: string; p_rules: Json }
+        Returns: boolean
+      }
+      update_monitor: {
+        Args: {
+          p_enabled: boolean
+          p_id: string
+          p_interval: number
+          p_owner: string
+        }
         Returns: boolean
       }
       update_short_link_destination: {
