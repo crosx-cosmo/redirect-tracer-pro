@@ -2,6 +2,8 @@ import { createServerFn } from "@tanstack/react-start";
 import { getRequestHost } from "@tanstack/react-start/server";
 import { z } from "zod";
 
+import { MAX_CONDITIONS, MAX_RULES, type LinkRule } from "./link-rules";
+
 export interface ShortLink {
   id: string;
   slug: string;
@@ -11,6 +13,7 @@ export interface ShortLink {
   last_clicked_at: string | null;
   created_at: string;
   expires_at: string | null;
+  rules?: LinkRule[];
 }
 
 const owner = z.string().regex(/^[A-Za-z0-9-]{32,128}$/, "Invalid owner token");
@@ -146,4 +149,113 @@ export const setShortLinkExpiry = createServerFn({ method: "POST" })
     if (error) throw dbError(error.message);
     if (!ok) throw new Error("Link not found.");
     return { ok: true };
+  });
+
+const ruleSchema = z.object({
+  id: z.string().regex(/^[a-z0-9]{1,16}$/),
+  name: z.string().trim().max(60),
+  enabled: z.boolean(),
+  match: z.enum(["all", "any"]),
+  destination: z.string().trim().min(1).max(2048),
+  conditions: z
+    .array(
+      z.object({
+        field: z.enum([
+          "country", "platform", "browser", "os", "query", "utm_source",
+          "utm_medium", "utm_campaign", "weekday", "hour", "date",
+        ]),
+        op: z.enum(["is", "is_not", "contains", "between", "before", "after", "exists"]),
+        value: z.string().trim().max(200),
+      }),
+    )
+    .min(1)
+    .max(MAX_CONDITIONS),
+});
+
+export const setShortLinkRules = createServerFn({ method: "POST" })
+  .inputValidator((d) =>
+    z.object({ id: z.string().uuid(), rules: z.array(ruleSchema).max(MAX_RULES), owner }).parse(d),
+  )
+  .handler(async ({ data }) => {
+    const { shortLinkDb, validateDestination } = await import("./shortlinks.server");
+    const host = getRequestHost();
+    const rules: LinkRule[] = [];
+    for (const r of data.rules) {
+      const problem = await validateDestination(r.destination, host);
+      if (problem) throw new Error(`Rule "${r.name || r.id}": ${problem}`);
+      rules.push({ ...r, destination: new URL(r.destination).toString() });
+    }
+    const { data: ok, error } = await shortLinkDb().rpc("set_short_link_rules", {
+      p_id: data.id,
+      p_owner: data.owner,
+      p_rules: rules as never,
+    });
+    if (error) throw dbError(error.message);
+    if (!ok) throw new Error("Link not found.");
+    return { ok: true };
+  });
+
+export interface Bucket {
+  k: string;
+  n: number;
+}
+export interface LinkAnalytics {
+  total: number;
+  unique: number;
+  bots: number;
+  timeline: { day: string; clicks: number; unique: number }[];
+  referrers: Bucket[];
+  countries: Bucket[];
+  devices: Bucket[];
+  browsers: Bucket[];
+  os: Bucket[];
+  utm: Bucket[];
+  recent: {
+    clicked_at: string;
+    referrer_host: string | null;
+    country: string | null;
+    region: string | null;
+    device: string | null;
+    browser: string | null;
+    os: string | null;
+    utm_source: string | null;
+    is_bot: boolean;
+    rule_id: string | null;
+  }[];
+}
+
+const range = z.object({
+  id: z.string().uuid(),
+  owner,
+  from: z.string().datetime({ offset: true }),
+  to: z.string().datetime({ offset: true }),
+});
+
+export const getLinkAnalytics = createServerFn({ method: "POST" })
+  .inputValidator((d) => range.parse(d))
+  .handler(async ({ data }) => {
+    const { shortLinkDb } = await import("./shortlinks.server");
+    const { data: res, error } = await shortLinkDb().rpc("link_analytics", {
+      p_id: data.id,
+      p_owner: data.owner,
+      p_from: data.from,
+      p_to: data.to,
+    });
+    if (error) throw dbError(error.message);
+    if (!res) throw new Error("Link not found.");
+    return res as unknown as LinkAnalytics;
+  });
+
+export const exportLinkClicks = createServerFn({ method: "POST" })
+  .inputValidator((d) => range.parse(d))
+  .handler(async ({ data }) => {
+    const { shortLinkDb } = await import("./shortlinks.server");
+    const { data: rows, error } = await shortLinkDb().rpc("export_link_clicks", {
+      p_id: data.id,
+      p_owner: data.owner,
+      p_from: data.from,
+      p_to: data.to,
+    });
+    if (error) throw dbError(error.message);
+    return (rows ?? []) as Record<string, string | boolean | null>[];
   });
