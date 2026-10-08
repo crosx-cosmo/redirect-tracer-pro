@@ -1,0 +1,209 @@
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { Bot, Download, Loader2, MousePointerClick, Users } from "lucide-react";
+import { useMemo, useState } from "react";
+import { toast } from "sonner";
+
+import { Button } from "@/components/ui/button";
+import { exportLinkClicks, getLinkAnalytics, type Bucket } from "@/lib/shortlinks.functions";
+
+const RANGES = [
+  { label: "24h", days: 1 },
+  { label: "7d", days: 7 },
+  { label: "30d", days: 30 },
+  { label: "90d", days: 90 },
+] as const;
+
+function BucketList({ title, items, total }: { title: string; items: Bucket[]; total: number }) {
+  return (
+    <div className="rounded-xl border border-hairline bg-surface/60 p-3">
+      <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.11em] text-muted-foreground">
+        {title}
+      </p>
+      {items.length === 0 ? (
+        <p className="text-xs text-muted-foreground">No data yet</p>
+      ) : (
+        <ul className="space-y-1.5">
+          {items.map((b) => (
+            <li key={b.k} className="text-xs">
+              <div className="flex justify-between gap-2">
+                <span className="truncate text-foreground">{b.k}</span>
+                <span className="tabular-nums text-muted-foreground">{b.n}</span>
+              </div>
+              <div className="mt-0.5 h-1 overflow-hidden rounded-full bg-muted">
+                <div
+                  className="h-full rounded-full bg-primary transition-all duration-500"
+                  style={{ width: `${total ? (b.n / total) * 100 : 0}%` }}
+                />
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+export function LinkAnalyticsPanel({
+  id,
+  slug,
+  owner,
+}: {
+  id: string;
+  slug: string;
+  owner: string;
+}) {
+  const [days, setDays] = useState<number>(30);
+  const get = useServerFn(getLinkAnalytics);
+  const exp = useServerFn(exportLinkClicks);
+  const window = useMemo(() => {
+    const to = new Date(Date.now() + 60_000);
+    const from = new Date(to.getTime() - days * 86_400_000);
+    return { from: from.toISOString(), to: to.toISOString() };
+  }, [days]);
+
+  const q = useQuery({
+    queryKey: ["link-analytics", id, days],
+    queryFn: () => get({ data: { id, owner, ...window } }),
+    retry: false,
+  });
+
+  async function download() {
+    try {
+      const rows = await exp({ data: { id, owner, ...window } });
+      if (!rows.length) return toast.info("No clicks in this range");
+      const cols = Object.keys(rows[0]!);
+      const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+      const csv = [cols.join(","), ...rows.map((r) => cols.map((c) => esc(r[c])).join(","))].join(
+        "\n",
+      );
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+      a.download = `clicks-${slug}-${days}d.csv`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      toast.success("Click data exported");
+    } catch (e) {
+      toast.error((e as Error).message);
+    }
+  }
+
+  const d = q.data;
+  const max = Math.max(1, ...(d?.timeline.map((t) => t.clicks) ?? [1]));
+
+  return (
+    <div className="animate-reveal space-y-3 rounded-xl border border-hairline bg-surface-muted/40 p-3 sm:p-4">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex gap-1 rounded-lg border border-hairline p-0.5">
+          {RANGES.map((r) => (
+            <button
+              key={r.label}
+              type="button"
+              onClick={() => setDays(r.days)}
+              className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${
+                days === r.days
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {r.label}
+            </button>
+          ))}
+        </div>
+        <Button variant="subtle" size="sm" onClick={download}>
+          <Download className="size-3.5" /> Export clicks
+        </Button>
+      </div>
+
+      {q.isLoading ? (
+        <div className="grid gap-2 sm:grid-cols-3">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="h-16 animate-pulse rounded-xl bg-muted" />
+          ))}
+        </div>
+      ) : q.error ? (
+        <p className="text-sm text-destructive">{(q.error as Error).message}</p>
+      ) : d ? (
+        <>
+          <div className="grid grid-cols-3 gap-2">
+            {[
+              { icon: MousePointerClick, label: "Total clicks", v: d.total },
+              { icon: Users, label: "Unique visitors", v: d.unique },
+              { icon: Bot, label: "Bot hits", v: d.bots },
+            ].map((s) => (
+              <div key={s.label} className="rounded-xl border border-hairline bg-surface/60 p-3">
+                <s.icon className="size-3.5 text-muted-foreground" />
+                <p className="mt-1 text-lg font-semibold tabular-nums">{s.v}</p>
+                <p className="text-[10.5px] text-muted-foreground">{s.label}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="rounded-xl border border-hairline bg-surface/60 p-3">
+            <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.11em] text-muted-foreground">
+              Timeline (clicks per day)
+            </p>
+            {d.timeline.length === 0 ? (
+              <p className="text-xs text-muted-foreground">
+                No clicks recorded in this range. Clicks appear here after the short link is opened.
+              </p>
+            ) : (
+              <div className="flex h-24 items-end gap-1">
+                {d.timeline.map((t) => (
+                  <div
+                    key={t.day}
+                    title={`${t.day}: ${t.clicks} clicks, ${t.unique} unique`}
+                    className="flex-1 rounded-t bg-primary/80 transition-all hover:bg-primary"
+                    style={{ height: `${Math.max(4, (t.clicks / max) * 100)}%` }}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            <BucketList title="Referrers" items={d.referrers} total={d.total} />
+            <BucketList title="Countries" items={d.countries} total={d.total} />
+            <BucketList title="Devices" items={d.devices} total={d.total} />
+            <BucketList title="Browsers" items={d.browsers} total={d.total} />
+            <BucketList title="Operating systems" items={d.os} total={d.total} />
+            <BucketList title="UTM source / medium / campaign" items={d.utm} total={d.total} />
+          </div>
+
+          <div className="rounded-xl border border-hairline bg-surface/60 p-3">
+            <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.11em] text-muted-foreground">
+              Recent activity
+            </p>
+            {d.recent.length === 0 ? (
+              <p className="text-xs text-muted-foreground">No activity yet</p>
+            ) : (
+              <ul className="divide-y divide-hairline text-xs">
+                {d.recent.map((r, i) => (
+                  <li key={i} className="flex flex-wrap justify-between gap-x-3 py-1.5">
+                    <span className="text-muted-foreground">
+                      {new Date(r.clicked_at).toLocaleString()}
+                    </span>
+                    <span className="text-foreground">
+                      {[r.device, r.browser, r.os, r.country, r.referrer_host ?? "Direct"]
+                        .filter(Boolean)
+                        .join(" · ")}
+                      {r.is_bot ? " · bot" : ""}
+                      {r.rule_id ? " · rule" : ""}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          <p className="text-[10.5px] text-muted-foreground">
+            Privacy: visitors are counted with a daily-rotating anonymous hash — IP addresses are
+            never stored.
+          </p>
+        </>
+      ) : null}
+      {q.isFetching && !q.isLoading ? (
+        <Loader2 className="size-3.5 animate-spin text-muted-foreground" />
+      ) : null}
+    </div>
+  );
+}
